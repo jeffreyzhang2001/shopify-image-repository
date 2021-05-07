@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import Gallery from './Gallery';
 
-function App() {
+import './App.css';
+import { Button, Tabs } from 'antd';
+
+export const App = () => {
+  const { TabPane } = Tabs;
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1 className="header-title">Image Repository</h1>
+        <p>(Shopify Application)</p>
+        <Button type="primary">Upload a Picture</Button>
       </header>
+      <div className="App-body">
+        <Tabs defaultActiveKey="1" type="card" size="large" centered>
+          <TabPane tab="Gallery" key="1">
+            <Gallery />
+          </TabPane>
+          <TabPane tab="Transactions" key="2">
+            Content of Tab Pane 2
+          </TabPane>
+        </Tabs>
+      </div>
     </div>
   );
 }
