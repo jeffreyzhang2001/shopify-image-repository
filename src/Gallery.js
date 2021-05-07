@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { Card, Image, Button, Row, Col, Pagination, Popconfirm } from 'antd';
 
-const pageImageLimit = 9;
+const pageImageLimit = 6;
 
 const Gallery = () => {
   const [numImages, setNumImages] = useState(0);
