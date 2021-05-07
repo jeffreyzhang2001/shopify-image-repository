@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Gallery from './Gallery';
 import axios from 'axios';
 
 import './App.css';
 import { Button, Tabs, Modal, Form, Input } from 'antd';
+
+const pageImageLimit = 6;
 
 export const App = () => {
   const { TabPane } = Tabs;
@@ -28,10 +30,42 @@ export const App = () => {
       path: values.url
     })
       .then(res => {
-        console.log(res.data.last_row_id); 
+        // On success, update images locally (mutation) without invalidating cache
+        setNumImages(numImages + 1);
+        // Last page is at capacity
+        if (numImages % pageImageLimit === 0) {
+          const lastPageIndex = numImages/pageImageLimit
+          setImages(prevImages => ({ ...prevImages, [lastPageIndex+1]: [{name: values.name, path: values.url, rowid: res.data.last_row_id}] }));
+        } else {
+          const lastPageIndex = Math.ceil(numImages/pageImageLimit)
+          setImages(prevImages => ({ ...prevImages, [lastPageIndex]: [...prevImages[lastPageIndex], {name: values.name, path: values.url, rowid: res.data.last_row_id}] }));
+        }
       });
     setIsModalVisible(false);
   }
+
+  const [numImages, setNumImages] = useState(0);
+  const [images, setImages] = useState({});
+  const [currPage, setCurrPage] = useState(1);
+
+  // Fetch and cache number of image records on first load for pagination purposes
+  useEffect(() => {
+    axios.get('/get_num_image_records')
+      .then(res => {
+        setNumImages(res.data.num_image_records);
+      });
+  }, []);
+
+  const fetchImages = (limit, offset) => {
+    axios.get('/get_images', { params: { limit, offset }})
+      .then(res => {
+        setImages(prevImages => ({ ...prevImages, [currPage]: res.data.images }));
+      });
+  }
+
+  useEffect(() => {
+    fetchImages(pageImageLimit, 0);
+  }, []);
 
   return (
     <div className="App">
@@ -86,7 +120,14 @@ export const App = () => {
       <div className="App-body">
         <Tabs defaultActiveKey="1" type="card" size="large" centered>
           <TabPane tab="Gallery" key="1">
-            <Gallery />
+            <Gallery
+              numImages={numImages}
+              setNumImages={setNumImages}
+              images={images}
+              setImages={setImages}
+              currPage={currPage}
+              setCurrPage={setCurrPage}
+            />
           </TabPane>
         </Tabs>
       </div>
