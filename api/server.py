@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, request
 import os
 import sqlite3
 import time
@@ -12,14 +12,31 @@ def init_db():
     g.db.row_factory = sqlite3.Row
     g.cursor = g.db.cursor()
 
-@app.route('/get_images')
-def index():
+@app.route('/get_num_image_records')
+def get_num_image_records():
     if 'db' not in g:
         init_db()
-    g.cursor.execute("SELECT rowid, * FROM images")
+    
+    # Fetch number of rows for pagination
+    g.cursor.execute("SELECT COUNT(*) as count FROM images")
+    num_image_records = dict(g.cursor.fetchone())['count']
+
+    return { 'num_image_records' : num_image_records } 
+
+@app.route('/get_images')
+def get_images():
+    if 'db' not in g:
+        init_db()
+    
+    limit = request.args.get('limit')
+    offset = request.args.get('offset')
+
+    # Fetch rows according to limit and offset
+    g.cursor.execute(f'SELECT rowid, * FROM images LIMIT {limit} OFFSET {offset}')
     image_rows = []
     for row in g.cursor.fetchall():
         image_rows.append(dict(row))
+
     return { 'images' : image_rows } 
 
 @app.route('/upload', methods=['POST'])
