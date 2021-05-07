@@ -10,13 +10,25 @@ export const App = () => {
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const onModalOk = () => {
+    form
+      .validateFields()
+      .then(values => {
+        form.resetFields();
+        handleAddPicture(values);
+      })
+      .catch(info => {
+        console.log('Validation Failed:', info);
+      });
+  }
+
   const handleAddPicture = (values) => {
     axios.post('/add_image', {
       name: values.name,
       path: values.url
     })
       .then(res => {
-        console.log(res)
+        console.log(res.data.last_row_id); 
       });
     setIsModalVisible(false);
   }
@@ -30,22 +42,10 @@ export const App = () => {
         <Modal
           title="Add a Picture"
           visible={isModalVisible}
-          onOk={() => {
-            form
-              .validateFields()
-              .then(values => {
-                form.resetFields();
-                handleAddPicture(values);
-              })
-              .catch(info => {
-                console.log('Validation Failed:', info);
-              });
-          }}
+          onOk={onModalOk}
           onCancel={() => setIsModalVisible(false)}
         >
-          <Form
-            form={form}
-          >
+          <Form form={form}>
             <Form.Item
               name="name"
               label="Name"
