@@ -18,9 +18,6 @@ export const App = () => {
           <TabPane tab="Gallery" key="1">
             <Gallery />
           </TabPane>
-          <TabPane tab="Transactions" key="2">
-            Content of Tab Pane 2
-          </TabPane>
         </Tabs>
       </div>
     </div>

@@ -28,8 +28,8 @@ def get_images():
     if 'db' not in g:
         init_db()
     
-    limit = request.args.get('limit')
-    offset = request.args.get('offset')
+    limit = request.args.get('limit') or 100
+    offset = request.args.get('offset') or 0
 
     # Fetch rows according to limit and offset
     g.cursor.execute(f'SELECT rowid, * FROM images LIMIT {limit} OFFSET {offset}')
@@ -44,3 +44,13 @@ def upload():
     file = request.files['image']
     filename = secure_filename(file.filename)
     file.save(os.path.join('../public/images', f'{time.time()}_{filename}'))
+
+@app.route('/delete_image/<image_id>', methods=['DELETE'])
+def delete_image(image_id):
+    if 'db' not in g:
+        init_db()
+    print(image_id)
+    g.cursor.execute(f'DELETE FROM images WHERE ROWID = {image_id}')
+    g.db.commit()
+
+    return "Succesfully delted"

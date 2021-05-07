@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { Card, Image, Button, Row, Col, Pagination } from 'antd';
+import { Card, Image, Button, Row, Col, Pagination, Popconfirm } from 'antd';
+
+const pageImageLimit = 9;
 
 const Gallery = () => {
   const [numImages, setNumImages] = useState(0);
@@ -24,8 +26,14 @@ const Gallery = () => {
   }
 
   useEffect(() => {
-    fetchImages(9, 0);
+    fetchImages(pageImageLimit, 0);
   }, []);
+
+  const deleteImage = (rowId) => {
+    axios.delete(`/delete_image/${rowId}`).then(
+      console.log("SUCCESFULLY DELETED")
+    )
+  }
 
   return (
     <div>
@@ -37,18 +45,24 @@ const Gallery = () => {
               style={{ width: 300 }}
             >
               <Image src={image.path} style={{ borderRadius: 4 }}/>
-              <Button type="primary">Buy</Button>
+              <Popconfirm
+                title="Are you sure you want to delete this image?"
+                onConfirm={() => deleteImage(image.rowid)}
+                okText="Yes"
+              >
+                <Button type="primary" danger>Delete</Button>
+              </Popconfirm>
             </Card>
           </Col>
-        ))}
+        ))} 
       </Row>
       <Pagination
         total={numImages}
-        pageSize={9}
+        pageSize={pageImageLimit}
         onChange={(newPage, pageSize) => {
           setCurrPage(newPage);
           if (!(newPage in images)) {
-            fetchImages(9, (newPage - 1) * pageSize);
+            fetchImages(pageImageLimit, (newPage - 1) * pageSize);
           }
         }}
       />
