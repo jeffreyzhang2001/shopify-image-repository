@@ -1,8 +1,9 @@
-from flask import Flask, g, request
+from flask import Flask, g, request, jsonify
 import os
 import sqlite3
 import time
 import json
+import validators
 
 app = Flask(__name__)
 
@@ -49,19 +50,24 @@ def add_image():
   name = post_body['name']
   path = post_body['path']
 
-  g.cursor.execute(f'INSERT INTO images (name, path) VALUES (\'{name}\', \'{path}\')')
-  g.db.commit()
-  
-  last_row_id = g.cursor.lastrowid
-  
-  return { 'last_row_id': last_row_id }
+  if (validators.url(path)):
+    g.cursor.execute(f'INSERT INTO images (name, path) VALUES (\'{name}\', \'{path}\')')
+    g.db.commit()
+    
+    last_row_id = g.cursor.lastrowid
+    
+    return { 'last_row_id': last_row_id }
+  else:
+    return jsonify({ 'error': 'The provided path is an invalid URL.'}), 404
 
 @app.route('/delete_image/<image_id>', methods=['DELETE'])
 def delete_image(image_id):
   if 'db' not in g:
     init_db()
+  try:
+    g.cursor.execute(f'DELETE FROM images WHERE ROWID = {image_id}')
+    g.db.commit()
 
-  g.cursor.execute(f'DELETE FROM images WHERE ROWID = {image_id}')
-  g.db.commit()
-
-  return "Image succesfully deleted"
+    return "Image succesfully deleted"
+  except:
+    return jsonify({ 'error': 'The requested image could not be deleted. The provided image ID is invalid.'}), 404
