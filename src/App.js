@@ -122,11 +122,11 @@ export const App = () => {
           <TabPane tab="Gallery" key="1">
             <Gallery
               numImages={numImages}
-              setNumImages={setNumImages}
               images={images}
               setImages={setImages}
               currPage={currPage}
               setCurrPage={setCurrPage}
+              fetchImages={fetchImages}
             />
           </TabPane>
         </Tabs>

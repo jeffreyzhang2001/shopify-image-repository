@@ -7,14 +7,21 @@ const pageImageLimit = 6;
 const Gallery = ({
   numImages,
   images,
+  setImages,
   currPage,
   setCurrPage,
   fetchImages,
 }) => {
   const deleteImage = (rowId) => {
-    axios.delete(`/delete_image/${rowId}`).then(
-      console.log("SUCCESFULLY DELETED")
-    )
+    axios.delete(`/delete_image/${rowId}`)
+      .then(() => {
+        invalidateCache();
+      })
+  }
+
+  const invalidateCache = () => {
+    setImages({});
+    fetchImages(pageImageLimit, (currPage - 1) * pageImageLimit);
   }
 
   return (
