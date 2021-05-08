@@ -5,6 +5,8 @@ I chose this stack for its ease of demonstration (less DB and backend boilerplat
 This on-disk SQLite db is excellent for demonstrative purposes as it is efficient for a relatively small number of rows and persists data between refreshes.  
 (Note: the project comes with a pre-seeded database with 4 entries.)
 
+![Shopify Image Repository Screenshot](demo.png)
+
 ## Setup Instructions
 There are set-up instructions for both the back-end (Flask) and front-end (React).
 
@@ -31,7 +33,7 @@ yarn install
 yarn start
 ```
 To install the required Node dependencies and start the React server.  
-You can then visit the app at [http://localhost:3000](http://localhost:3000) to view it in the browserin dev mode.
+You can then visit the app at [http://localhost:3000](http://localhost:3000) to view it in the browser in dev mode.
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
