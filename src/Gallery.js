@@ -56,6 +56,7 @@ const Gallery = ({
             fetchImages(pageImageLimit, (newPage - 1) * pageSize, newPage);
           }
         }}
+        data-testid="pagination"
       />
     </div>
   ) 
