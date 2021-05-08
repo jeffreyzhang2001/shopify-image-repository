@@ -1,10 +1,22 @@
 ## Image Repository - Jeffrey Zhang's Shopify Application
 
 This image repository utilizes 3 core external dependencies: React, Flask, and a local SQLite db.  
-I chose this stack for its ease of demonstration (less DB and backend boilerplate).  
-This on-disk SQLite db is excellent for demonstrative purposes as it is efficient for a relatively small number of rows and persists data between refreshes.  
+I chose this stack for its ease of demonstration and efficiency (less DB and backend boilerplate).   
 (Note: the project comes with a pre-seeded database with 4 entries.)
 
+## Features
+- Efficient, custom pagination solution
+  - Client only requests what needs to be shown on the page (very small DB load)
+  - Each page loads 6 images at a time
+  - Client caches previously loaded image metadata (name, path) in memory to minimize DB trips when revisiting previously loaded pages
+  - Client updates cache when adding/deleting photos without additional DB requests
+  - No external state management libraries used
+- On-disk SQLite db allows for saved images to persist between refreshes
+- Users can add photos (with validation) by providing a URL
+- Users can delete photos
+- Very fast load speeds
+
+Here's a screenshot:
 ![Shopify Image Repository Screenshot](demo.png)
 
 ## Setup Instructions
@@ -34,9 +46,6 @@ yarn start
 ```
 To install the required Node dependencies and start the React server.  
 You can then visit the app at [http://localhost:3000](http://localhost:3000) to view it in the browser in dev mode.
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Testing Instructions
 ### `yarn test`
