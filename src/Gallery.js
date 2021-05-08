@@ -6,6 +6,7 @@ const pageImageLimit = 6;
 
 const Gallery = ({
   numImages,
+  setNumImages,
   images,
   setImages,
   currPage,
@@ -15,13 +16,14 @@ const Gallery = ({
   const deleteImage = (rowId) => {
     axios.delete(`/delete_image/${rowId}`)
       .then(() => {
+        setNumImages(numImages - 1);
         invalidateCache();
       })
   }
 
   const invalidateCache = () => {
     setImages({});
-    fetchImages(pageImageLimit, (currPage - 1) * pageImageLimit);
+    fetchImages(pageImageLimit, (currPage - 1) * pageImageLimit, currPage);
   }
 
   return (
@@ -51,7 +53,7 @@ const Gallery = ({
         onChange={(newPage, pageSize) => {
           setCurrPage(newPage);
           if (!(newPage in images)) {
-            fetchImages(pageImageLimit, (newPage - 1) * pageSize);
+            fetchImages(pageImageLimit, (newPage - 1) * pageSize, newPage);
           }
         }}
       />

@@ -3,12 +3,11 @@ import Gallery from './Gallery';
 import axios from 'axios';
 
 import './App.css';
-import { Button, Tabs, Modal, Form, Input } from 'antd';
+import { Button, Modal, Form, Input } from 'antd';
 
 const pageImageLimit = 6;
 
 export const App = () => {
-  const { TabPane } = Tabs;
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -56,15 +55,15 @@ export const App = () => {
       });
   }, []);
 
-  const fetchImages = (limit, offset) => {
+  const fetchImages = (limit, offset, storePage) => {
     axios.get('/get_images', { params: { limit, offset }})
       .then(res => {
-        setImages(prevImages => ({ ...prevImages, [currPage]: res.data.images }));
+        setImages(prevImages => ({ ...prevImages, [storePage]: res.data.images }));
       });
   }
 
   useEffect(() => {
-    fetchImages(pageImageLimit, 0);
+    fetchImages(pageImageLimit, 0, currPage);
   }, []);
 
   return (
@@ -118,18 +117,15 @@ export const App = () => {
         </Modal>
       </header>
       <div className="App-body">
-        <Tabs defaultActiveKey="1" type="card" size="large" centered>
-          <TabPane tab="Gallery" key="1">
-            <Gallery
-              numImages={numImages}
-              images={images}
-              setImages={setImages}
-              currPage={currPage}
-              setCurrPage={setCurrPage}
-              fetchImages={fetchImages}
-            />
-          </TabPane>
-        </Tabs>
+        <Gallery
+          numImages={numImages}
+          setNumImages={setNumImages}
+          images={images}
+          setImages={setImages}
+          currPage={currPage}
+          setCurrPage={setCurrPage}
+          fetchImages={fetchImages}
+        />
       </div>
     </div>
   );
