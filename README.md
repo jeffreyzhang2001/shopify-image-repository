@@ -52,3 +52,8 @@ You can then visit the app at [http://localhost:3000](http://localhost:3000) to 
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+## Possible Improvements
+- Extend to uploading files directly (code is largely set up in a way that supports this already)
+- Improve client UX (better grid responsiveness)
+- Add stock + price functionality
